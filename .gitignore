@@ -1,0 +1,15 @@
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Dependências e builds
+node_modules/
+vendor/
+dist/
+
+# Sistema/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

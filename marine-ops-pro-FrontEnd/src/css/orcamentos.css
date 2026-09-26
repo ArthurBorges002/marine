@@ -1,0 +1,34 @@
+  /* ===================================
+          CONFIGURAÇÕES GERAIS
+  ====================================== */
+  * {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Barra de ferramentas ocupa 100% da tela */
+  .tox .tox-toolbar {
+    width: 100% !important;
+    background-color: black !important;
+    box-sizing: border-box;
+  }
+
+  .tox-promotion{
+    display: none;
+    pointer-events: none;
+  }
+  .tox-tinymce{
+    border: 3px solid #efefef !important;
+    border-radius: 0px !important;
+  }
+
+  .tox-tinymce:focus{
+    border: 1px solid #007bff !important;
+  }
+
+  .tox-edit-area__iframe{
+    background-color: #fafafa !important;
+  }
+
+  .tox-anchorbar{
+    border: 3px solid #007bff !important;
+  }
