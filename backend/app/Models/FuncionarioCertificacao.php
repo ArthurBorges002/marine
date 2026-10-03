@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\PertenceAOrganizacao;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['funcionario_id', 'nome'])]
 class FuncionarioCertificacao extends Model
 {
-    use PertenceAOrganizacao;
+    use Auditavel, PertenceAOrganizacao;
 
     public function funcionario(): BelongsTo
     {

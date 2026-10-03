@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\PertenceAOrganizacao;
 use Database\Factories\FuncionarioFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -20,10 +21,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Funcionario extends Model
 {
+    use Auditavel, PertenceAOrganizacao;
+
     /** @use HasFactory<FuncionarioFactory> */
     use HasFactory;
-
-    use PertenceAOrganizacao;
 
     protected function casts(): array
     {

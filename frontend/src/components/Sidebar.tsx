@@ -1,42 +1,12 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  Building2,
-  DollarSign,
-  FolderOpen,
-  Home,
-  LogOut,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  Users,
-  Wrench,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { LogOut, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { menuOrganizacao, menuPlataforma } from '@/lib/navegacao';
 import { cn } from '@/lib/utils';
 import Marca from './Marca';
 import SeletorTema from './SeletorTema';
-
-interface ItemMenu {
-  nome: string;
-  rota: string;
-  icone: LucideIcon;
-}
-
-const menuOrganizacao: ItemMenu[] = [
-  { nome: 'Dashboard', rota: '/', icone: Home },
-  { nome: 'Funcionários', rota: '/funcionarios', icone: Users },
-  { nome: 'Equipamentos', rota: '/equipamentos', icone: Wrench },
-  { nome: 'Projetos', rota: '/projetos', icone: FolderOpen },
-  { nome: 'Finanças', rota: '/financas', icone: DollarSign },
-  { nome: 'Configurações', rota: '/configuracoes', icone: Settings },
-];
-
-/** Menu do administrador da plataforma (dono do SaaS). */
-const menuPlataforma: ItemMenu[] = [{ nome: 'Organizações', rota: '/plataforma/organizacoes', icone: Building2 }];
 
 interface Props {
   /** Desktop: só ícones. */
@@ -48,8 +18,11 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = ({ recolhido, onAlternarRecolhido, abertoMobile, onFecharMobile }) => {
-  const { usuario, logout } = useAuth();
-  const itens = usuario?.administradorPlataforma ? menuPlataforma : menuOrganizacao;
+  const { usuario, logout, pode } = useAuth();
+  // Só mostra o que o perfil permite (a API bloqueia de qualquer forma)
+  const itens = usuario?.administradorPlataforma
+    ? menuPlataforma
+    : menuOrganizacao.filter((item) => item.permissao === null || pode(item.permissao));
   // Na gaveta do celular o menu aparece sempre completo
   const compacto = recolhido && !abertoMobile;
 
@@ -111,7 +84,18 @@ const Sidebar: React.FC<Props> = ({ recolhido, onAlternarRecolhido, abertoMobile
 
         <div className="space-y-1 border-t border-sidebar-border p-2">
           {usuario && !compacto && (
-            <div className="flex items-center gap-3 px-3 py-2">
+            <NavLink
+              to="/minha-conta"
+              onClick={onFecharMobile}
+              title="Minha conta"
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 rounded-md px-3 py-2 transition-colors hover:bg-muted',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+                  isActive && 'bg-sidebar-accent',
+                )
+              }
+            >
               <div
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground"
                 aria-hidden="true"
@@ -124,7 +108,7 @@ const Sidebar: React.FC<Props> = ({ recolhido, onAlternarRecolhido, abertoMobile
                   {usuario.administradorPlataforma ? 'Plataforma' : usuario.organizacao?.nome}
                 </p>
               </div>
-            </div>
+            </NavLink>
           )}
 
           <div className={cn(compacto && 'flex flex-col items-center gap-1')}>

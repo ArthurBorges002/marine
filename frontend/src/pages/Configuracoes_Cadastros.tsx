@@ -146,7 +146,7 @@ const Configuracoes_Cadastros: React.FC = () => {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => {navigate("/Configuracoes_Cadastros"); scrollTo({top: 0})}}>Voltar</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => {navigate("/configuracoes/cadastros"); scrollTo({top: 0})}}>Voltar</AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

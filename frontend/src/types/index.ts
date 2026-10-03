@@ -4,10 +4,51 @@ export interface Usuario {
   id: number;
   nome: string;
   email: string;
-  tipo: 'admin' | 'usuario';
+  ativo: boolean;
   /** Dono do SaaS: administra organizações e não acessa dados de negócio. */
   administradorPlataforma: boolean;
   organizacao: { id: number; nome: string } | null;
+  perfil: { id: number; nome: string; administrador: boolean } | null;
+  /** Chaves do catálogo (ex.: "rh.funcionarios.ver"). */
+  permissoes: string[];
+  ultimoAcessoEm: string | null;
+}
+
+export interface Perfil {
+  id: number;
+  nome: string;
+  descricao: string | null;
+  /** Acesso total; não pode ser editado nem excluído. */
+  administrador: boolean;
+  permissoes: string[];
+  usuarios: number;
+}
+
+export interface ModuloPermissoes {
+  modulo: string;
+  permissoes: { chave: string; descricao: string }[];
+}
+
+export type AcaoAuditoria = 'criado' | 'atualizado' | 'excluido' | 'login' | 'login_falhou';
+
+export interface RegistroAuditoria {
+  id: number;
+  acao: AcaoAuditoria;
+  entidade: string | null;
+  entidadeNome: string | null;
+  registroId: number | null;
+  usuario: { id: number; nome: string } | null;
+  antes: Record<string, unknown> | null;
+  depois: Record<string, unknown> | null;
+  ip: string | null;
+  em: string;
+}
+
+export interface PaginaAuditoria {
+  data: RegistroAuditoria[];
+  pagina: number;
+  ultimaPagina: number;
+  total: number;
 }
 
 /** Cliente do SaaS (visto pela administração da plataforma). */

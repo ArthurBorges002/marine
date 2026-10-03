@@ -34,7 +34,6 @@ class CriarAdministradorPlataforma extends Command
             'nome' => $this->option('nome'),
             'email' => $email,
             'password' => $senha,
-            'tipo' => 'admin',
         ]);
         $usuario->administrador_plataforma = true;
         $usuario->save();

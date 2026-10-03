@@ -11,9 +11,11 @@ class ExigeOrganizacaoAtiva
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $organizacao = $request->user()?->organizacao;
+        $usuario = $request->user();
+        $organizacao = $usuario?->organizacao;
 
         abort_if($organizacao === null, 403, 'Acesso permitido apenas a usuários de uma organização.');
+        abort_unless($usuario->ativo, 403, 'Usuário desativado. Fale com o administrador da sua empresa.');
         abort_unless($organizacao->isAtiva(), 403, 'Organização suspensa. Entre em contato com o suporte.');
 
         return $next($request);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\PertenceAOrganizacao;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Hidden(['conteudo_base64'])]
 class TemplatePdf extends Model
 {
-    use PertenceAOrganizacao;
+    use Auditavel, PertenceAOrganizacao;
 
     public const MIME_TYPES = [
         'png' => 'image/png',

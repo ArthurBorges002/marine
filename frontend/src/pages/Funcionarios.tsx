@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import QueryState from '@/components/QueryState';
 import { api } from '@/lib/api';
 import type { Funcionario } from '@/types';
+import Pode from '@/components/Pode';
 import { 
   Users, 
   Plus, 
@@ -70,6 +71,7 @@ const Funcionarios: React.FC = () => {
           <p className="text-muted-foreground">Gerencie a equipe e acompanhe certificações</p>
         </div>
         
+        <Pode permissao="rh.funcionarios.criar">
         <Button 
           className="bg-gradient-ocean border-0 shadow-glow"
           onClick={() => {
@@ -79,6 +81,7 @@ const Funcionarios: React.FC = () => {
           <Plus className="w-4 h-4 mr-2" />
           Novo Funcionário
         </Button>
+        </Pode>
       </div>
 
       {/* Estatísticas Rápidas */}
@@ -272,6 +275,7 @@ const Funcionarios: React.FC = () => {
                     <Eye className="w-4 h-4 mr-2" />
                     Ver
                   </Button>
+                  <Pode permissao="rh.funcionarios.editar">
                   <Button 
                     size="sm" 
                     variant="outline" 
@@ -280,6 +284,7 @@ const Funcionarios: React.FC = () => {
                     <Edit className="w-4 h-4 mr-2" />
                     Editar
                   </Button>
+                  </Pode>
                   <Button size="sm" variant="outline" className="flex-1 lg:flex-none">
                     <FileEdit className="w-4 h-4 mr-2" />
                     Docs
