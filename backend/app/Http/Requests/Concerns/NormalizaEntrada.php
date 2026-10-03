@@ -38,7 +38,7 @@ trait NormalizaEntrada
     /** "20/09/1990" → "1990-09-20"; mantém "1990-09-20". Máscara incompleta vira null. */
     protected function normalizarData(mixed $valor): mixed
     {
-        if (! is_string($valor) || trim($valor, " _/-") === '') {
+        if (! is_string($valor) || trim($valor, ' _/-') === '') {
             return null;
         }
         if (preg_match('#^\d{2}/\d{2}/\d{4}$#', $valor)) {

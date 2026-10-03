@@ -11,9 +11,7 @@ use Mpdf\Mpdf;
  */
 class PdfService
 {
-    public function __construct(private TemplatePdfService $templates)
-    {
-    }
+    public function __construct(private TemplatePdfService $templates) {}
 
     /**
      * @param  array{capa?: ?string, cabecalho?: ?string, corpo?: ?string, rodape?: ?string,

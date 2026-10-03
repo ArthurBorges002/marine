@@ -2,13 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Funcionario;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Formato usado na listagem de funcionários.
  *
- * @mixin \App\Models\Funcionario
+ * @mixin Funcionario
  */
 class FuncionarioResource extends JsonResource
 {

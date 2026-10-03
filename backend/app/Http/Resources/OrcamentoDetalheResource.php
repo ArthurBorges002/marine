@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Orcamento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Dados para a tela de edição de orçamento
  * (mesmas chaves que o endpoint antigo dados_editar_orcamento.php).
  *
- * @mixin \App\Models\Orcamento
+ * @mixin Orcamento
  */
 class OrcamentoDetalheResource extends JsonResource
 {
