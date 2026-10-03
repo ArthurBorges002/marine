@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use Database\Factories\OrganizacaoFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -15,13 +16,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Organizacao extends Model
 {
     /** @use HasFactory<OrganizacaoFactory> */
-    use HasFactory;
+    use Auditavel, HasFactory;
 
     public const STATUS = ['ativa', 'suspensa'];
 
     public function usuarios(): HasMany
     {
         return $this->hasMany(Usuario::class);
+    }
+
+    /** Perfis da organização (sem o escopo global: usado fora do contexto dela, ex. plataforma). */
+    public function perfis(): HasMany
+    {
+        return $this->hasMany(Perfil::class)->withoutGlobalScope('organizacao');
     }
 
     public function isAtiva(): bool

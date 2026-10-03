@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
 import { api, authStorage, mensagemErro } from '@/lib/api';
 import type { Usuario } from '@/types';
 
@@ -6,6 +6,10 @@ interface AuthContextType {
   usuario: Usuario | null;
   login: (email: string, senha: string) => Promise<{ ok: boolean; erro?: string }>;
   logout: () => Promise<void>;
+  /** Busca de novo o usuário (perfil e permissões) na API. */
+  recarregar: () => Promise<void>;
+  /** O usuário tem a permissão do catálogo? (a API também verifica) */
+  pode: (permissao: string) => boolean;
   isAuthenticated: boolean;
 }
 
@@ -30,16 +34,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return savedUser && authStorage.getToken() ? JSON.parse(savedUser) : null;
   });
 
-  // Confirma na API que o token salvo ainda é válido
-  useEffect(() => {
-    if (!authStorage.getToken()) return;
-    api.get<Usuario>('/me')
-      .then(setUsuario)
-      .catch(() => {
-        authStorage.limpar();
-        setUsuario(null);
-      });
+  const recarregar = useCallback(async () => {
+    const token = authStorage.getToken();
+    if (!token) return;
+    try {
+      const atual = await api.get<Usuario>('/me');
+      authStorage.salvar(token, atual);
+      setUsuario(atual);
+    } catch {
+      authStorage.limpar();
+      setUsuario(null);
+    }
   }, []);
+
+  // Confirma na API que o token salvo ainda é válido e atualiza perfil/permissões
+  useEffect(() => {
+    recarregar();
+  }, [recarregar]);
 
   const login = async (email: string, senha: string) => {
     try {
@@ -62,10 +73,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUsuario(null);
   };
 
+  const pode = useCallback((permissao: string) => !!usuario?.permissoes?.includes(permissao), [usuario]);
+
   const isAuthenticated = !!usuario;
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ usuario, login, logout, recarregar, pode, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

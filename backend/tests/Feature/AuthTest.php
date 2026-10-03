@@ -12,12 +12,12 @@ class AuthTest extends TestCase
 
     public function test_login_retorna_token_e_usuario(): void
     {
-        Usuario::factory()->admin()->create(['email' => 'admin@teste.com', 'password' => 'segredo123', 'nome' => 'Admin']);
+        Usuario::factory()->create(['email' => 'admin@teste.com', 'password' => 'segredo123', 'nome' => 'Admin']);
 
         $this->postJson('/api/login', ['email' => 'admin@teste.com', 'senha' => 'segredo123'])
             ->assertOk()
-            ->assertJsonStructure(['token', 'usuario' => ['id', 'nome', 'email', 'tipo']])
-            ->assertJsonPath('usuario.tipo', 'admin')
+            ->assertJsonStructure(['token', 'usuario' => ['id', 'nome', 'email', 'perfil', 'permissoes']])
+            ->assertJsonPath('usuario.perfil.nome', 'Administrador')
             ->assertJsonMissingPath('usuario.password');
     }
 

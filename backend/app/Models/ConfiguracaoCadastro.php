@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\PertenceAOrganizacao;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['tela', 'configuracao'])]
 class ConfiguracaoCadastro extends Model
 {
-    use PertenceAOrganizacao;
+    use Auditavel, PertenceAOrganizacao;
 
     public const TELA_FUNCIONARIO = 1;
 

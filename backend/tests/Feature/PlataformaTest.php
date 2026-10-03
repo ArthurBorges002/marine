@@ -45,7 +45,7 @@ class PlataformaTest extends TestCase
         $this->postJson('/api/login', ['email' => 'ana@cliente.com', 'senha' => 'senha-forte-1'])->assertOk()
             ->assertJsonPath('usuario.organizacao.nome', 'Cliente Um')
             ->assertJsonPath('usuario.administradorPlataforma', false)
-            ->assertJsonPath('usuario.tipo', 'admin');
+            ->assertJsonPath('usuario.perfil.nome', 'Administrador');
     }
 
     public function test_valida_criacao(): void
@@ -87,7 +87,7 @@ class PlataformaTest extends TestCase
 
     public function test_usuario_de_organizacao_nao_acessa_plataforma(): void
     {
-        $this->autenticar(['tipo' => 'admin']);
+        $this->autenticar();
 
         $this->getJson('/api/plataforma/organizacoes')->assertForbidden();
         $this->postJson('/api/plataforma/organizacoes', $this->novaOrganizacao())->assertForbidden();
