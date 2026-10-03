@@ -1,7 +1,14 @@
-# Marine Ops — Sistema de Gestão de Mergulho
+# Integra
 
-SaaS de gestão de operações de mergulho: orçamentos (com editor e geração de PDF),
-funcionários, equipamentos, projetos e finanças.
+SaaS de gestão administrativa, financeira, operacional e de RH: despesas, custos fixos,
+contratos, notas fiscais, folha e obrigações, funcionários, férias e folgas, EPI, equipamentos
+mobilizados, passagens, documentos e vencimentos, políticas de RH, aprovações, auditoria e
+relatórios.
+
+> **Em migração.** O sistema está sendo transformado a partir do protótipo "Marine Ops"
+> (gestão de mergulho), em etapas, conforme o *Plano de Migração*. Enquanto isso, parte do
+> que está descrito abaixo (ex.: orçamentos) ainda é do sistema antigo e será removido.
+> Regras de trabalho: [docs/CONVENCOES.md](docs/CONVENCOES.md) · backup: [docs/BACKUP.md](docs/BACKUP.md).
 
 ```
 Frontend (React + Vite)  →  API Laravel 13 (Sanctum)  →  PostgreSQL (Neon)
@@ -98,6 +105,16 @@ php artisan test
 ```
 
 Os testes usam SQLite em memória (forçado no `phpunit.xml`) e **nunca** acessam o Neon.
+Para rodar a mesma suíte em PostgreSQL (o banco de produção), com um PostgreSQL local em
+`127.0.0.1` e o banco `integra_testes`:
+
+```bash
+php artisan test -c phpunit.pgsql.xml
+```
+
+O `TestCase` aborta a execução se o banco de teste não for local, porque os testes apagam
+as tabelas. O CI (`.github/workflows/ci.yml`) roda Pint, os testes em SQLite e em
+PostgreSQL, e o build do frontend a cada push em `main` e em pull requests.
 Cobrem autenticação, orçamentos (CRUD, filtros, paginação, status, PDF), funcionários
 (cadastro/edição com máscaras, validação), modelos, upload de templates, configuração de
 cadastro, dashboard e finanças.

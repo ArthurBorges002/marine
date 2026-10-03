@@ -13,3 +13,7 @@ dist/
 Thumbs.db
 .idea/
 .vscode/
+
+# Backups do banco (contêm dados pessoais; ver docs/BACKUP.md)
+*.dump
+*.sql.gz
