@@ -1,5 +1,5 @@
-import { Transform } from "stream";
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
   darkMode: ["class"],
@@ -14,6 +14,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -23,7 +26,6 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -68,19 +70,8 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
-      backgroundImage: {
-        'gradient-ocean': 'var(--gradient-ocean)',
-        'gradient-depth': 'var(--gradient-depth)',
-        'gradient-surface': 'var(--gradient-surface)',
-      },
       boxShadow: {
-        'ocean': 'var(--shadow-ocean)',
-        'card': 'var(--shadow-card)',
-        'glow': 'var(--shadow-glow)',
-      },
-      transitionTimingFunction: {
-        'smooth': 'var(--transition-smooth)',
-        'bounce': 'var(--transition-bounce)',
+        card: "var(--shadow-card)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -125,7 +116,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.4s ease-out",
         "accordion-up": "accordion-up 0.3s ease-out",
-        "fade-in": "fade-in 0.5s ease-out",
+        "fade-in": "fade-in 0.25s ease-out",
         "fade-in-modal" : "fade-in-modal 0.8s cubic-bezier(0.25, 0.8, 0.25, 0.8)",
         "slide-in": "slide-in 0.4s ease-out",
         "wave": "wave 2s ease-in-out infinite",

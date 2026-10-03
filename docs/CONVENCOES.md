@@ -54,7 +54,13 @@ Valem para todo código novo e para o código antigo quando for tocado. O plano 
 
 - Toda tela nova ou redesenhada passa pela skill **ui-ux-pro-max** do Claude Code (diretrizes de
   UX, layout, tipografia, cores, acessibilidade e responsividade) antes de ser implementada.
-- O resultado é aplicado com os componentes shadcn e o Tailwind já existentes no projeto.
+- A fonte de verdade visual é [`design-system/integra/MASTER.md`](../design-system/integra/MASTER.md)
+  (tokens, componentes base, padrões e checklist); regras específicas de uma tela vão em
+  `design-system/integra/pages/<tela>.md`.
+- Telas usam os componentes base (`PageHeader`, `DataTable`, `CampoFormulario`, `EstadoVazio`,
+  `StatusBadge`, `ConfirmarAcao`) e os tokens de cor — nunca hex direto nem as classes legadas
+  do protótipo (`bg-gradient-ocean`, `shadow-glow`).
+- Telas antigas só são redesenhadas na etapa do seu módulo.
 
 ## Testes
 

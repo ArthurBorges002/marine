@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, BookUser, House, UserPen, Folder, ShieldCheck, Timer, FileEdit, Upload, Download, Eye, Trash, Medal, BadgeCheck } from "lucide-react";
+import { Home, BookUser, House, UserPen, Folder, ShieldCheck, FileEdit, Upload, Download, Eye, Trash, Medal, BadgeCheck } from "lucide-react";
 import {Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator} from "@/components/ui/breadcrumb";
 import {AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
@@ -353,16 +353,6 @@ const Novo_Funcionario: React.FC = () => {
                         </BreadcrumbPage>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <div className="flex items-center gap-2 px-10 py-1 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600 shadow-sm mt-4 md:mt-0">
-                    <Timer className="w-5 h-5 text-blue-600"/>
-                    <span className="text-[14px] hidden md:block">
-                        Criação em <strong className="text-gray-700">20/09/08</strong> às <strong className="text-gray-700">18:54:21</strong> por 
-                        <strong className="text-gray-700"> Arthur</strong>
-                    </span>
-                    <span className="text-[14px] block md:hidden">
-                        <strong className="text-gray-700">Criação: 20/09/08 18:54 Arthur</strong>
-                    </span>
-                </div>
             </div>
             
             <form onSubmit={salvarNovoFuncionario}>
