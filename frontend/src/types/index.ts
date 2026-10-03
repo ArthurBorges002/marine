@@ -5,6 +5,20 @@ export interface Usuario {
   nome: string;
   email: string;
   tipo: 'admin' | 'usuario';
+  /** Dono do SaaS: administra organizações e não acessa dados de negócio. */
+  administradorPlataforma: boolean;
+  organizacao: { id: number; nome: string } | null;
+}
+
+/** Cliente do SaaS (visto pela administração da plataforma). */
+export interface Organizacao {
+  id: number;
+  nome: string;
+  documento: string | null;
+  status: 'ativa' | 'suspensa';
+  plano: string | null;
+  usuarios: number;
+  criadaEm: string | null;
 }
 
 export interface Funcionario {

@@ -22,8 +22,15 @@ Valem para todo código novo e para o código antigo quando for tocado. O plano 
 - Dinheiro: `decimal(14,2)` e cast `decimal:2` (nunca `float`).
 - Status que depende de data (vencido, a vencer) é calculado, não gravado.
 - Cadastros e registros financeiros usam soft delete.
-- A partir da Etapa 2A, todo registro de negócio tem `organizacao_id` e o model usa o trait
-  `PertenceAOrganizacao`; índices únicos de negócio são compostos com `organizacao_id`.
+- Todo registro de negócio tem `organizacao_id` e o model usa o trait `PertenceAOrganizacao`
+  (o `ArquiteturaTest` falha se faltar); índices únicos de negócio são compostos com `organizacao_id`.
+- Regras de validação que consultam o banco (`unique`, `exists`) **não** passam pelo escopo do
+  Eloquent: em tabelas de negócio use `RegrasOrganizacao::unico()` / `RegrasOrganizacao::existe()`.
+  Um `unique` global revela dados de outro cliente ("CPF já cadastrado").
+- Consultas com `DB::table()` também não passam pelo escopo: filtre `organizacao_id` explicitamente.
+- Jobs, comandos e agendador rodam sem usuário logado: use `OrganizacaoAtual::executarComo($org, fn)`.
+- Rotas de negócio ficam no grupo com middleware `organizacao`; rotas do dono do SaaS, no grupo
+  `plataforma` (o `ArquiteturaTest` falha se uma rota ficar fora dos dois).
 
 ## Backend (Laravel)
 
@@ -43,9 +50,16 @@ Valem para todo código novo e para o código antigo quando for tocado. O plano 
 - Rotas em minúsculas com hífen (`/financeiro/despesas/nova`), protegidas por permissão.
 - Componentes visuais de `src/components/ui` (shadcn); nada de biblioteca nova sem justificativa.
 
+## Design de telas
+
+- Toda tela nova ou redesenhada passa pela skill **ui-ux-pro-max** do Claude Code (diretrizes de
+  UX, layout, tipografia, cores, acessibilidade e responsividade) antes de ser implementada.
+- O resultado é aplicado com os componentes shadcn e o Tailwind já existentes no projeto.
+
 ## Testes
 
 - Feature test para cada endpoint novo: sucesso, validação (422), sem permissão (403).
-- A partir da Etapa 2A: teste de isolamento (outra organização recebe 404).
+- Teste de isolamento para todo endpoint de negócio novo, em `IsolamentoOrganizacaoTest`
+  (outra organização não vê o registro e recebe 404).
 - `php artisan test` (SQLite) e `php artisan test -c phpunit.pgsql.xml` (PostgreSQL local).
   O `TestCase` aborta se o banco de teste não for local: os testes apagam as tabelas.

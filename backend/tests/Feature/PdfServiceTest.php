@@ -21,6 +21,7 @@ class PdfServiceTest extends TestCase
 
     public function test_gera_pdf_com_cabecalho_rodape_timbrado_e_marca_dagua(): void
     {
+        $this->autenticar();
         $imagem = UploadedFile::fake()->image('timbrado.png', 100, 140);
         TemplatePdf::create([
             'tipo' => 'documento',
@@ -42,6 +43,7 @@ class PdfServiceTest extends TestCase
 
     public function test_timbrado_inexistente_e_ignorado(): void
     {
+        $this->autenticar();
         $pdf = app(PdfService::class)->gerar('<p>x</p>', ['papel_timbrado' => 'nao_existe']);
 
         $this->assertStringStartsWith('%PDF', $pdf);

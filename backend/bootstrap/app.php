@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Middleware\ExigeAdministradorPlataforma;
+use App\Http\Middleware\ExigeOrganizacaoAtiva;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,6 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Não há tela de login no backend; a API responde 401 em JSON.
         $middleware->redirectGuestsTo('/');
+
+        $middleware->alias([
+            'organizacao' => ExigeOrganizacaoAtiva::class,
+            'plataforma' => ExigeAdministradorPlataforma::class,
+        ]);
+
+        // A organização é checada antes de carregar registros da rota ({funcionario} etc.).
+        $middleware->prependToPriorityList(SubstituteBindings::class, ExigeOrganizacaoAtiva::class);
+        $middleware->prependToPriorityList(SubstituteBindings::class, ExigeAdministradorPlataforma::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

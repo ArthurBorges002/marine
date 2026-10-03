@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PertenceAOrganizacao;
 use Database\Factories\FuncionarioFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -21,6 +22,8 @@ class Funcionario extends Model
 {
     /** @use HasFactory<FuncionarioFactory> */
     use HasFactory;
+
+    use PertenceAOrganizacao;
 
     protected function casts(): array
     {

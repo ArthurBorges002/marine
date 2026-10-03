@@ -16,6 +16,11 @@ class UsuarioResource extends JsonResource
             'nome' => $this->nome,
             'email' => $this->email,
             'tipo' => $this->tipo,
+            'administradorPlataforma' => $this->isAdministradorPlataforma(),
+            'organizacao' => $this->organizacao ? [
+                'id' => $this->organizacao->id,
+                'nome' => $this->organizacao->nome,
+            ] : null,
         ];
     }
 }

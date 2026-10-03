@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\NormalizaEntrada;
+use App\Support\RegrasOrganizacao;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * Recebe o formulário de cadastro/edição de funcionário (multipart/form-data)
@@ -31,7 +31,7 @@ class FuncionarioRequest extends FormRequest
         return [
             'nome_completo' => ['required', 'string', 'max:255'],
             'data_nascimento' => ['nullable', 'date', 'before:today'],
-            'cpf' => ['nullable', 'string', 'max:14', Rule::unique('funcionarios', 'cpf')->ignore($funcionario)],
+            'cpf' => ['nullable', 'string', 'max:14', RegrasOrganizacao::unico('funcionarios', 'cpf')->ignore($funcionario)],
             'rg' => ['nullable', 'string', 'max:20'],
             'genero' => ['nullable', 'string', 'max:30'],
             'estado_civil' => ['nullable', 'string', 'max:30'],

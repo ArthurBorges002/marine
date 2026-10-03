@@ -9,15 +9,24 @@ use Illuminate\Http\JsonResponse;
 
 class ConfiguracaoCadastroController extends Controller
 {
-    public function show(ConfiguracaoCadastro $configuracao): JsonResponse
+    public function show(int $tela): JsonResponse
     {
-        return response()->json($configuracao->configuracao);
+        $this->validarTela($tela);
+
+        return response()->json(ConfiguracaoCadastro::daTela($tela));
     }
 
-    public function update(ConfiguracaoCadastroRequest $request, ConfiguracaoCadastro $configuracao): JsonResponse
+    public function update(ConfiguracaoCadastroRequest $request, int $tela): JsonResponse
     {
-        $configuracao->update(['configuracao' => $request->validated('config')]);
+        $this->validarTela($tela);
+
+        ConfiguracaoCadastro::updateOrCreate(['tela' => $tela], ['configuracao' => $request->validated('config')]);
 
         return response()->json(['status' => 'Certo']);
+    }
+
+    private function validarTela(int $tela): void
+    {
+        abort_unless(array_key_exists($tela, ConfiguracaoCadastro::PADRAO), 404);
     }
 }
