@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
+import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { Waves, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import CampoFormulario from './CampoFormulario';
+import Marca from './Marca';
+import SeletorTema from './SeletorTema';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const [carregando, setCarregando] = useState(false);
+
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const entrar = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro('');
-    setIsLoading(true);
+    setCarregando(true);
 
     // Em caso de sucesso, o redirecionamento é tratado pelo PublicRoute
     const resultado = await login(email, senha);
@@ -26,82 +28,83 @@ const LoginForm: React.FC = () => {
       setErro(resultado.erro || 'Email ou senha incorretos');
     }
 
-    setIsLoading(false);
+    setCarregando(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-ocean p-4">
-      <div className="w-full max-w-md space-y-6 animate-fade-in">
-        {/* Logo e Título */}
-        <div className="text-center text-white space-y-4">
-          <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <Waves className="w-8 h-8 text-white animate-wave" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold">Sistema de Mergulho</h1>
-            <p className="text-white/80">Gestão Profissional de Operações</p>
-          </div>
-        </div>
+    <div className="flex min-h-dvh flex-col bg-background">
+      <div className="flex justify-end p-4">
+        <SeletorTema />
+      </div>
 
-        {/* Formulário */}
-        <Card className="shadow-ocean">
-          <CardHeader>
-            <CardTitle>Entrar no Sistema</CardTitle>
-            <CardDescription>
-              Faça login para acessar o sistema de gestão
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+      <main className="flex flex-1 items-center justify-center px-4 pb-16">
+        <div className="w-full max-w-sm space-y-8">
+          <div className="space-y-6">
+            <Marca />
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">Entrar</h1>
+              <p className="text-sm text-muted-foreground">Acesse a gestão da sua empresa.</p>
+            </div>
+          </div>
+
+          <form onSubmit={entrar} className="space-y-4" noValidate>
+            <CampoFormulario id="email" rotulo="Email">
+              {(campo) => (
                 <Input
-                  id="email"
+                  {...campo}
                   type="email"
-                  placeholder="seu@email.com"
+                  autoComplete="username"
+                  inputMode="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="transition-smooth"
                 />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="senha">Senha</Label>
-                <Input
-                  id="senha"
-                  type="password"
-                  placeholder="Sua senha"
-                  value={senha}
-                  onChange={(e) => setSenha(e.target.value)}
-                  required
-                  className="transition-smooth"
-                />
-              </div>
-
-              {erro && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{erro}</AlertDescription>
-                </Alert>
               )}
+            </CampoFormulario>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-ocean border-0 shadow-glow transition-smooth"
-                disabled={isLoading}
+            <div className="relative">
+              <CampoFormulario id="senha" rotulo="Senha">
+                {(campo) => (
+                  <Input
+                    {...campo}
+                    type={mostrarSenha ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    required
+                    className="pr-11"
+                  />
+                )}
+              </CampoFormulario>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-[30px] h-8 w-8 text-muted-foreground"
+                onClick={() => setMostrarSenha((m) => !m)}
+                aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                aria-pressed={mostrarSenha}
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {mostrarSenha ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
               </Button>
-            </form>
-          </CardContent>
-        </Card>
+            </div>
 
-        {/* Rodapé */}
-        <div className="text-center text-white/60 text-sm">
-          <p>© 2024 Sistema de Gestão de Mergulho</p>
+            {erro && (
+              <Alert variant="destructive" role="alert">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                <AlertDescription>{erro}</AlertDescription>
+              </Alert>
+            )}
+
+            <Button type="submit" className="w-full" disabled={carregando}>
+              {carregando && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
+              {carregando ? 'Entrando...' : 'Entrar'}
+            </Button>
+          </form>
         </div>
-      </div>
+      </main>
+
+      <footer className="p-4 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} Integra</footer>
     </div>
   );
 };

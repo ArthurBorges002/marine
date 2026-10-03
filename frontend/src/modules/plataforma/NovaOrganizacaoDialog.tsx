@@ -12,9 +12,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import CampoFormulario from "@/components/CampoFormulario";
 import { api, ApiError, mensagemErro } from "@/lib/api";
-import { cn } from "@/lib/utils";
 import type { Organizacao } from "@/types";
 
 interface Props {
@@ -23,9 +22,10 @@ interface Props {
 }
 
 const VAZIO = { nome: "", documento: "", adminNome: "", adminEmail: "", adminSenha: "" };
+type Campo = keyof typeof VAZIO;
 
-/** Campo do formulário → chave de erro devolvida pela API (422). */
-const CHAVES_API: Record<keyof typeof VAZIO, string> = {
+/** Campo do formulário → chave de erro devolvida pela API (422), na ordem do formulário. */
+const CHAVES_API: Record<Campo, string> = {
   nome: "nome",
   documento: "documento",
   adminNome: "administrador.nome",
@@ -36,8 +36,17 @@ const CHAVES_API: Record<keyof typeof VAZIO, string> = {
 const NovaOrganizacaoDialog: React.FC<Props> = ({ aberto, onAbertoChange }) => {
   const queryClient = useQueryClient();
   const [form, setForm] = useState(VAZIO);
-  const [erros, setErros] = useState<Partial<Record<keyof typeof VAZIO, string>>>({});
+  const [erros, setErros] = useState<Partial<Record<Campo, string>>>({});
   const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const fechar = (abrir: boolean) => {
+    if (!abrir) {
+      setForm(VAZIO);
+      setErros({});
+      setMostrarSenha(false);
+    }
+    onAbertoChange(abrir);
+  };
 
   const criar = useMutation({
     mutationFn: () =>
@@ -53,14 +62,14 @@ const NovaOrganizacaoDialog: React.FC<Props> = ({ aberto, onAbertoChange }) => {
     },
     onError: (err) => {
       if (err instanceof ApiError && err.status === 422 && err.errors) {
-        const novos: typeof erros = {};
-        (Object.keys(CHAVES_API) as (keyof typeof VAZIO)[]).forEach((campo) => {
+        const novos: Partial<Record<Campo, string>> = {};
+        (Object.keys(CHAVES_API) as Campo[]).forEach((campo) => {
           const mensagem = err.errors?.[CHAVES_API[campo]]?.[0];
           if (mensagem) novos[campo] = mensagem;
         });
         setErros(novos);
-        // Foco no primeiro campo inválido, na ordem do formulário
-        const primeiro = (Object.keys(VAZIO) as (keyof typeof VAZIO)[]).find((c) => novos[c]);
+        // Foco no primeiro campo inválido
+        const primeiro = (Object.keys(CHAVES_API) as Campo[]).find((c) => novos[c]);
         if (primeiro) document.getElementById(`org-${primeiro}`)?.focus();
         return;
       }
@@ -68,57 +77,17 @@ const NovaOrganizacaoDialog: React.FC<Props> = ({ aberto, onAbertoChange }) => {
     },
   });
 
-  const fechar = (abrir: boolean) => {
-    if (!abrir) {
-      setForm(VAZIO);
-      setErros({});
-      setMostrarSenha(false);
-    }
-    onAbertoChange(abrir);
-  };
-
-  const alterar = (campo: keyof typeof VAZIO) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [campo]: e.target.value }));
-    if (erros[campo]) setErros((atual) => ({ ...atual, [campo]: undefined }));
-  };
-
-  const campo = (
-    nome: keyof typeof VAZIO,
-    rotulo: string,
-    props: React.InputHTMLAttributes<HTMLInputElement> & { obrigatorio?: boolean; ajuda?: string } = {},
-  ) => {
-    const { obrigatorio, ajuda, className, ...inputProps } = props;
-    const id = `org-${nome}`;
-    const descricao = [ajuda && `${id}-ajuda`, erros[nome] && `${id}-erro`].filter(Boolean).join(" ") || undefined;
-    return (
-      <div className="space-y-1.5">
-        <Label htmlFor={id}>
-          {rotulo}
-          {obrigatorio && <span className="text-destructive" aria-hidden="true"> *</span>}
-        </Label>
-        <Input
-          id={id}
-          value={form[nome]}
-          onChange={alterar(nome)}
-          required={obrigatorio}
-          aria-invalid={!!erros[nome]}
-          aria-describedby={descricao}
-          className={cn(erros[nome] && "border-destructive focus-visible:ring-destructive", className)}
-          {...inputProps}
-        />
-        {ajuda && !erros[nome] && (
-          <p id={`${id}-ajuda`} className="text-xs text-muted-foreground">{ajuda}</p>
-        )}
-        {erros[nome] && (
-          <p id={`${id}-erro`} className="text-sm text-destructive" role="alert">{erros[nome]}</p>
-        )}
-      </div>
-    );
-  };
+  const valor = (campo: Campo) => ({
+    value: form[campo],
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((f) => ({ ...f, [campo]: e.target.value }));
+      if (erros[campo]) setErros((atual) => ({ ...atual, [campo]: undefined }));
+    },
+  });
 
   return (
     <Dialog open={aberto} onOpenChange={fechar}>
-      <DialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Nova organização</DialogTitle>
           <DialogDescription>
@@ -136,28 +105,41 @@ const NovaOrganizacaoDialog: React.FC<Props> = ({ aberto, onAbertoChange }) => {
           }}
         >
           <fieldset className="space-y-4">
-            <legend className="text-sm font-semibold text-foreground mb-1">Organização</legend>
-            {campo("nome", "Nome", { obrigatorio: true, autoComplete: "organization" })}
-            {campo("documento", "CPF ou CNPJ", { inputMode: "numeric", ajuda: "Opcional. Só números ou com pontuação." })}
+            <legend className="mb-1 text-sm font-semibold text-foreground">Organização</legend>
+            <CampoFormulario id="org-nome" rotulo="Nome" obrigatorio erro={erros.nome}>
+              {(p) => <Input {...p} {...valor("nome")} required autoComplete="organization" />}
+            </CampoFormulario>
+            <CampoFormulario id="org-documento" rotulo="CPF ou CNPJ" ajuda="Opcional. Só números ou com pontuação." erro={erros.documento}>
+              {(p) => <Input {...p} {...valor("documento")} inputMode="numeric" />}
+            </CampoFormulario>
           </fieldset>
 
           <fieldset className="space-y-4">
-            <legend className="text-sm font-semibold text-foreground mb-1">Primeiro administrador</legend>
-            {campo("adminNome", "Nome", { obrigatorio: true, autoComplete: "off" })}
-            {campo("adminEmail", "Email", { obrigatorio: true, type: "email", autoComplete: "off" })}
+            <legend className="mb-1 text-sm font-semibold text-foreground">Primeiro administrador</legend>
+            <CampoFormulario id="org-adminNome" rotulo="Nome" obrigatorio erro={erros.adminNome}>
+              {(p) => <Input {...p} {...valor("adminNome")} required autoComplete="off" />}
+            </CampoFormulario>
+            <CampoFormulario id="org-adminEmail" rotulo="Email" obrigatorio erro={erros.adminEmail}>
+              {(p) => <Input {...p} {...valor("adminEmail")} type="email" required autoComplete="off" />}
+            </CampoFormulario>
             <div className="relative">
-              {campo("adminSenha", "Senha", {
-                obrigatorio: true,
-                type: mostrarSenha ? "text" : "password",
-                autoComplete: "new-password",
-                ajuda: "Mínimo de 8 caracteres.",
-                className: "pr-11",
-              })}
+              <CampoFormulario id="org-adminSenha" rotulo="Senha" obrigatorio ajuda="Mínimo de 8 caracteres." erro={erros.adminSenha}>
+                {(p) => (
+                  <Input
+                    {...p}
+                    {...valor("adminSenha")}
+                    type={mostrarSenha ? "text" : "password"}
+                    required
+                    autoComplete="new-password"
+                    className="pr-11"
+                  />
+                )}
+              </CampoFormulario>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 top-[30px] h-8 w-8"
+                className="absolute right-1 top-[30px] h-8 w-8 text-muted-foreground"
                 onClick={() => setMostrarSenha((m) => !m)}
                 aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
                 aria-pressed={mostrarSenha}

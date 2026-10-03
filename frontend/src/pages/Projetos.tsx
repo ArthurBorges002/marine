@@ -165,9 +165,9 @@ const Projetos: React.FC = () => {
             </div>
             
             <div className="text-center p-4 border rounded-lg">
-              <TrendingUp className="w-8 h-8 text-accent mx-auto mb-2" />
+              <TrendingUp className="w-8 h-8 text-primary mx-auto mb-2" />
               <p className="text-sm text-muted-foreground">Gasto Real</p>
-              <p className="text-2xl font-bold text-accent">
+              <p className="text-2xl font-bold text-primary">
                 R$ {(estatisticas.gastoTotal / 1000).toFixed(0)}k
               </p>
             </div>
@@ -311,7 +311,7 @@ const Projetos: React.FC = () => {
                       <div className="text-sm">
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground">Gasto Real:</span>
-                          <span className="font-bold text-accent">
+                          <span className="font-bold text-primary">
                             R$ {projeto.gastoReal.toLocaleString('pt-BR')}
                           </span>
                         </div>
