@@ -37,7 +37,7 @@ class AuthTest extends TestCase
 
     public function test_rotas_protegidas_exigem_token(): void
     {
-        foreach (['/api/me', '/api/dashboard', '/api/funcionarios', '/api/orcamentos', '/api/financas'] as $rota) {
+        foreach (['/api/me', '/api/dashboard', '/api/funcionarios', '/api/projetos', '/api/financas'] as $rota) {
             $this->getJson($rota)->assertUnauthorized();
         }
     }

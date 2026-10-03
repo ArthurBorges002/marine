@@ -103,36 +103,3 @@ export interface Dashboard {
   };
   projetos: Projeto[];
 }
-
-/** Item da listagem de orçamentos. */
-export interface OrcamentoResumo {
-  codigo: number;
-  codigo_interno: string;
-  nome_cliente: string;
-  cidade: string | null;
-  estado: string | null;
-  info_complementar: string | null;
-  valor_total: string;
-  criado_em_data: string;
-  validade: string | null;
-  status: 'A' | 'E' | 'R';
-}
-
-export interface ModeloResumo {
-  codigo: string;
-  nome: string;
-}
-
-export interface TemplateCapa {
-  id: number;
-  nome_template_capa_arquivo: string;
-  nome_template_capa: string;
-  url: string;
-}
-
-export interface TemplateDocumento {
-  id: number;
-  template_doc_nome_arquivo: string;
-  template_doc_nome: string;
-  url: string;
-}

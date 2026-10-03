@@ -5,55 +5,30 @@ namespace App\Services;
 use Mpdf\Mpdf;
 
 /**
- * Geração dos PDFs de orçamento (capa + cabeçalho/corpo/rodapé) com mPDF.
- * Mantém o comportamento do gerador anterior: capa opcional na primeira página,
- * papel timbrado (imagem de fundo) e marca d'água separados para capa e documento.
+ * Geração de PDFs a partir de HTML com mPDF (termos, políticas, relatórios),
+ * com cabeçalho/rodapé, papel timbrado (imagem de fundo) e marca d'água opcionais.
  */
 class PdfService
 {
     public function __construct(private TemplatePdfService $templates) {}
 
     /**
-     * @param  array{capa?: ?string, cabecalho?: ?string, corpo?: ?string, rodape?: ?string,
-     *               template_capa?: ?string, template_documento?: ?string,
-     *               marca_dagua_capa?: ?string, marca_dagua_documento?: ?string}  $dados
+     * "papel_timbrado" é o identificador ("arquivo") de um template do tipo documento.
+     *
+     * @param  array{cabecalho?: ?string, rodape?: ?string, papel_timbrado?: ?string, marca_dagua?: ?string}  $opcoes
      */
-    public function documento(array $dados): string
+    public function gerar(string $html, array $opcoes = []): string
     {
         $mpdf = $this->novoMpdf();
         $mpdf->setAutoTopMargin = 'stretch';
         $mpdf->setAutoBottomMargin = 'stretch';
 
-        $cabecalho = (string) ($dados['cabecalho'] ?? '');
-        $rodape = (string) ($dados['rodape'] ?? '');
-        $capa = (string) ($dados['capa'] ?? '');
+        $mpdf->SetHTMLHeader((string) ($opcoes['cabecalho'] ?? ''));
+        $mpdf->SetHTMLFooter((string) ($opcoes['rodape'] ?? ''));
+        $this->aplicarFundo($mpdf, $this->templates->caminhoAbsoluto($opcoes['papel_timbrado'] ?? null, 'documento'));
+        $this->aplicarMarcaDagua($mpdf, $opcoes['marca_dagua'] ?? null);
 
-        // Capa
-        $this->aplicarFundo($mpdf, $this->templates->caminhoAbsoluto($dados['template_capa'] ?? null, 'capa'));
-        $this->aplicarMarcaDagua($mpdf, $dados['marca_dagua_capa'] ?? null);
-
-        if ($capa !== '') {
-            $mpdf->WriteHTML($capa);
-            $mpdf->SetHTMLHeader($cabecalho);
-            $mpdf->AddPage();
-        } else {
-            $mpdf->SetHTMLHeader($cabecalho);
-        }
-        $mpdf->SetHTMLFooter($rodape);
-
-        // Documento
-        $this->aplicarFundo($mpdf, $this->templates->caminhoAbsoluto($dados['template_documento'] ?? null, 'documento'));
-        $this->aplicarMarcaDagua($mpdf, $dados['marca_dagua_documento'] ?? null);
-
-        $mpdf->WriteHTML((string) ($dados['corpo'] ?? ''));
-
-        return $mpdf->Output('', 'S');
-    }
-
-    public function capa(?string $html): string
-    {
-        $mpdf = $this->novoMpdf();
-        $mpdf->WriteHTML((string) $html);
+        $mpdf->WriteHTML($html);
 
         return $mpdf->Output('', 'S');
     }

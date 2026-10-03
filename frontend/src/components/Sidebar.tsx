@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   Home,
-  FileText,
   Users,
   Wrench,
   FolderOpen,
@@ -24,7 +23,6 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { name: 'Dashboard', path: '/', icon: <Home className="w-5 h-5" /> },
-  { name: 'Orçamentos', path: '/orcamentos', icon: <FileText className="w-5 h-5" /> },
   { name: 'Funcionários', path: '/funcionarios', icon: <Users className="w-5 h-5" /> },
   { name: 'Equipamentos', path: '/equipamentos', icon: <Wrench className="w-5 h-5" /> },
   { name: 'Projetos', path: '/projetos', icon: <FolderOpen className="w-5 h-5" /> },

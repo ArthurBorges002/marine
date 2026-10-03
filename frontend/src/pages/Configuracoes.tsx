@@ -6,9 +6,8 @@ import {
   Settings, 
   User, 
   Shield, 
-  Database, 
-  FileText, 
-  Mail, 
+  Database,
+  Mail,
   Bell,
   Palette,
   Download,
@@ -121,103 +120,6 @@ const Configuracoes: React.FC = () => {
                 Visualizar
               </Button>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Modelos de Orçamento */}
-        <Card className="shadow-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-primary" />
-              Modelos de Orçamento
-            </CardTitle>
-            <CardDescription>
-              Configure modelos para geração de PDF
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="md:flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">Modelo De Documentos</p>
-                <p className="text-sm text-muted-foreground">Padronize Seus Modelos De Documentos</p>
-              </div>
-              <div className="mt-2 md:mt-0">
-                <Button className="mr-3" 
-                  onClick={() => {
-                    navegate("/Novo_Modelo_Orcamento")
-                    setTimeout(() => {
-                        scrollTo({ top: 0 });
-                      }, 50);
-                  }} 
-                  variant="outline" 
-                  size="sm">
-                  Criar
-                </Button>
-                <Button onClick={() => {
-                    navegate("/Alterar_Modelo_Orcamento")
-                    setTimeout(() => {
-                        scrollTo({ top: 0 });
-                      }, 50);
-                  }}  
-                    variant="outline" 
-                    size="sm">
-                  Alterar
-                </Button>
-              </div>
-            </div>
-            
-            <div className="md:flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">Capas De Orçamentos</p>
-                <p className="text-sm text-muted-foreground">Padronize Suas Capas Para Documentos</p>
-              </div>
-              <div className="mt-2 md:mt-0">
-                <Button className="mr-3" 
-                  onClick={() => {
-                      navegate("/Novo_Modelo_Capa")
-                      setTimeout(() => {
-                        scrollTo({ top: 0 });
-                      }, 50);
-                    }} 
-                    variant="outline" 
-                    size="sm">
-                    
-                  Criar
-                </Button>
-                <Button 
-                  onClick={() => {
-                    navegate("/Alterar_Modelo_Capa")
-                    setTimeout(() => {
-                        scrollTo({ top: 0 });
-                      }, 50);
-                    }}  
-                    variant="outline" 
-                    size="sm">
-                  Alterar
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">Templates Orçamentos</p>
-                <p className="text-sm text-muted-foreground">Configure os Templetes Para Impressão Do PDF</p>
-              </div>
-              <div>
-                <Button className="mr-3" 
-                  onClick={() => {
-                    navegate("/Novo_Template_Orcamento")
-                    setTimeout(() => {
-                        scrollTo({ top: 0 });
-                      }, 50);
-                  }}
-                    variant="outline" 
-                    size="sm">
-                  Criar
-                </Button>
-              </div>
-            </div>
-
           </CardContent>
         </Card>
 
