@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Funcionario;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Formato usado pelo formulário de edição de funcionário
  * (mesmas chaves que o endpoint antigo retornar_funcionario.php).
  *
- * @mixin \App\Models\Funcionario
+ * @mixin Funcionario
  */
 class FuncionarioDetalheResource extends JsonResource
 {

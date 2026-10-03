@@ -16,9 +16,7 @@ use Illuminate\Http\Response;
 
 class OrcamentoController extends Controller
 {
-    public function __construct(private OrcamentoService $orcamentos)
-    {
-    }
+    public function __construct(private OrcamentoService $orcamentos) {}
 
     public function index(Request $request): JsonResponse
     {

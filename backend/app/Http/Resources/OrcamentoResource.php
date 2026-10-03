@@ -2,13 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Orcamento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Item da listagem de orçamentos.
  *
- * @mixin \App\Models\Orcamento
+ * @mixin Orcamento
  */
 class OrcamentoResource extends JsonResource
 {
