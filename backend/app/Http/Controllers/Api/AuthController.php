@@ -21,15 +21,19 @@ class AuthController extends Controller
             throw ValidationException::withMessages(['email' => 'Email ou senha incorretos']);
         }
 
+        if (! $usuario->isAdministradorPlataforma() && ! $usuario->organizacao?->isAtiva()) {
+            throw ValidationException::withMessages(['email' => 'Organização suspensa. Entre em contato com o suporte.']);
+        }
+
         return response()->json([
             'token' => $usuario->createToken('frontend')->plainTextToken,
-            'usuario' => new UsuarioResource($usuario),
+            'usuario' => new UsuarioResource($usuario->load('organizacao')),
         ]);
     }
 
     public function me(Request $request): UsuarioResource
     {
-        return new UsuarioResource($request->user());
+        return new UsuarioResource($request->user()->load('organizacao'));
     }
 
     public function logout(Request $request): JsonResponse

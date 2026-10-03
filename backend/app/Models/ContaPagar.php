@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PertenceAOrganizacao;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['fornecedor', 'valor', 'data_vencimento', 'status', 'descricao', 'categoria'])]
 class ContaPagar extends Model
 {
+    use PertenceAOrganizacao;
+
     protected function casts(): array
     {
         return [

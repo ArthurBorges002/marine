@@ -12,7 +12,8 @@ import {
   LogOut,
   Menu,
   X,
-  Waves
+  Waves,
+  Building2
 } from 'lucide-react';
 
 interface MenuItem {
@@ -28,6 +29,11 @@ const menuItems: MenuItem[] = [
   { name: 'Projetos', path: '/projetos', icon: <FolderOpen className="w-5 h-5" /> },
   { name: 'Finanças', path: '/financas', icon: <DollarSign className="w-5 h-5" /> },
   { name: 'Configurações', path: '/configuracoes', icon: <Settings className="w-5 h-5" /> },
+];
+
+/** Menu do administrador da plataforma (dono do SaaS). */
+const menuPlataforma: MenuItem[] = [
+  { name: 'Organizações', path: '/plataforma/organizacoes', icon: <Building2 className="w-5 h-5" /> },
 ];
 
 interface SidebarProps {
@@ -99,7 +105,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-foreground truncate">{usuario.nome}</p>
-                <p className="text-sm text-muted-foreground capitalize">{usuario.tipo}</p>
+                <p className="text-sm text-muted-foreground truncate">
+                  {usuario.administradorPlataforma ? 'Plataforma' : usuario.organizacao?.nome}
+                </p>
               </div>
             </div>
           </div>
@@ -108,7 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         {/* Menu Items */}
         <nav className="flex-1 p-2">
           <ul className="space-y-1">
-            {menuItems.map((item) => (
+            {(usuario?.administradorPlataforma ? menuPlataforma : menuItems).map((item) => (
               <li key={item.path}>
                 <NavLink
                   to={item.path}

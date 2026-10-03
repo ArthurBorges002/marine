@@ -14,6 +14,7 @@ import Financas from "@/pages/Financas";
 import Configuracoes from "@/pages/Configuracoes";
 import Novo_Funcionario from "@/pages/Novo_Funcionario";
 import Configuracoes_Cadastros from "./pages/Configuracoes_Cadastros";
+import OrganizacoesPage from "@/modules/plataforma/OrganizacoesPage";
 
 const queryClient = new QueryClient();
 
@@ -27,10 +28,23 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   return !isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
 };
 
+const ROTA_PLATAFORMA = "/plataforma/organizacoes";
+
+/** Telas de negócio: só para usuários de uma organização (a API também bloqueia). */
+const RotaOrganizacao = ({ children }: { children: React.ReactNode }) => {
+  const { usuario } = useAuth();
+  return usuario?.administradorPlataforma ? <Navigate to={ROTA_PLATAFORMA} replace /> : <>{children}</>;
+};
+
+/** Administração do SaaS: só para o administrador da plataforma. */
+const RotaPlataforma = ({ children }: { children: React.ReactNode }) => {
+  const { usuario } = useAuth();
+  return usuario?.administradorPlataforma ? <>{children}</> : <Navigate to="/" replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      {/* ✅ Toaster do Sonner */}
       <Toaster />
 
       <BrowserRouter>
@@ -53,14 +67,16 @@ const App = () => (
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Dashboard />} />
-              <Route path="funcionarios" element={<Funcionarios />} />
-              <Route path="equipamentos" element={<Equipamentos />} />
-              <Route path="projetos" element={<Projetos />} />
-              <Route path="financas" element={<Financas />} />
-              <Route path="configuracoes" element={<Configuracoes />} />
-              <Route path="novo_funcionario" element={<Novo_Funcionario />} />
-              <Route path="configuracoes_cadastros" element={<Configuracoes_Cadastros />} />
+              <Route index element={<RotaOrganizacao><Dashboard /></RotaOrganizacao>} />
+              <Route path="funcionarios" element={<RotaOrganizacao><Funcionarios /></RotaOrganizacao>} />
+              <Route path="equipamentos" element={<RotaOrganizacao><Equipamentos /></RotaOrganizacao>} />
+              <Route path="projetos" element={<RotaOrganizacao><Projetos /></RotaOrganizacao>} />
+              <Route path="financas" element={<RotaOrganizacao><Financas /></RotaOrganizacao>} />
+              <Route path="configuracoes" element={<RotaOrganizacao><Configuracoes /></RotaOrganizacao>} />
+              <Route path="novo_funcionario" element={<RotaOrganizacao><Novo_Funcionario /></RotaOrganizacao>} />
+              <Route path="configuracoes_cadastros" element={<RotaOrganizacao><Configuracoes_Cadastros /></RotaOrganizacao>} />
+
+              <Route path="plataforma/organizacoes" element={<RotaPlataforma><OrganizacoesPage /></RotaPlataforma>} />
             </Route>
           </Routes>
         </AuthProvider>

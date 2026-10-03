@@ -17,7 +17,7 @@ Frontend (React + Vite)  →  API Laravel 13 (Sanctum)  →  PostgreSQL (Neon)
 
 > **Dados.** O banco do Neon contém apenas dados de teste do protótipo (usuários, funcionários,
 > equipamentos, projetos, contas, fluxo de caixa, configuração de cadastro e imagens de papel
-> timbrado), que serão descartados na Etapa 2A. Não há seeders: não existe `php artisan db:seed`
+> timbrado), agrupados na organização "Demonstração". Não há seeders: não existe `php artisan db:seed`
 > para rodar, e o frontend não tem mocks — tudo vem da API.
 
 ---
@@ -90,11 +90,22 @@ Build de produção: `npm run build` (gera `frontend/dist`). Em produção, defi
 `VITE_API_URL` com a URL pública da API **antes** do build, e inclua a URL do frontend
 em `FRONTEND_URL` no backend.
 
-### Acesso
+### Acesso e organizações (SaaS)
 
-Os usuários existentes foram migrados com as mesmas credenciais de antes (agora com senha
-em hash bcrypt): `admin@mergulho.com` (admin) e `joao@mergulho.com` (usuário).
-**Troque essas senhas** — elas eram as senhas de demonstração do protótipo.
+Cada cliente é uma **organização**; os dados de uma nunca aparecem para outra. Há dois tipos
+de acesso:
+
+- **Administrador da plataforma** (dono do SaaS): não pertence a nenhuma organização, só cria,
+  suspende e reativa organizações em *Organizações*. Crie o seu com:
+  ```bash
+  cd backend
+  php artisan integra:admin-plataforma seu@email.com --nome="Seu Nome"   # pede a senha
+  ```
+- **Usuários de uma organização**: o primeiro administrador é criado junto com a organização
+  pelo administrador da plataforma.
+
+Os usuários do protótipo (`admin@mergulho.com`, `joao@mergulho.com`) e seus dados ficaram na
+organização **Demonstração**. **Troque essas senhas** — eram as senhas de demonstração.
 
 ## 3. Testes
 
@@ -154,7 +165,9 @@ Todos sob `/api`. Exceto `login`, exigem `Authorization: Bearer <token>`.
 |---|---|---|
 | POST | `/login` | `{email, senha}` → `{token, usuario}` |
 | POST | `/logout` | Revoga o token atual |
-| GET | `/me` | Usuário autenticado |
+| GET | `/me` | Usuário autenticado (com `organizacao` e `administradorPlataforma`) |
+| GET / POST | `/plataforma/organizacoes` | Lista / cria organização + primeiro administrador (só administrador da plataforma) |
+| PATCH | `/plataforma/organizacoes/{id}` | Edita nome/documento ou suspende/reativa (`status`) |
 | GET | `/dashboard` | Estatísticas, alertas e projetos |
 | GET | `/funcionarios` | Lista (com certificações) |
 | POST | `/funcionarios` | Cadastro (multipart) |
@@ -167,7 +180,7 @@ Erros seguem o padrão do Laravel: `422 {message, errors}` para validação,
 
 ## Banco de dados
 
-Tabelas: `usuarios`, `funcionarios`, `funcionario_certificacoes`, `projetos`, `equipamentos`,
+Tabelas: `organizacoes` (clientes do SaaS; toda tabela de negócio tem `organizacao_id`), `usuarios`, `funcionarios`, `funcionario_certificacoes`, `projetos`, `equipamentos`,
 `templates_pdf` (papel timbrado usado pelo `PdfService`, imagem guardada no banco),
 `contas_receber`, `contas_pagar`, `fluxo_caixa`, `configuracoes_cadastro`, além das tabelas
 do framework (`migrations`, `personal_access_tokens`, `cache`, `jobs`, `sessions`, ...).
