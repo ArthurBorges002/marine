@@ -80,11 +80,6 @@ export function abrirPdf(blob: Blob) {
   window.open(URL.createObjectURL(blob), "_blank");
 }
 
-/** URL pública da imagem de um template de papel timbrado (usada como background na pré-visualização). */
-export function templateImagemUrl(arquivo: string) {
-  return `${API_URL}/templates-pdf/imagem/${encodeURIComponent(arquivo)}`;
-}
-
 export function mensagemErro(err: unknown) {
   return err instanceof Error ? err.message : String(err);
 }
